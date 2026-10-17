@@ -1,7 +1,7 @@
-from fastapi import FastAPI
-from datetime import datetime, timezone
 import os
 import socket
+from datetime import datetime, timezone
+from fastapi import FastAPI
 
 app = FastAPI()
 local_counter = 0
@@ -11,6 +11,7 @@ redis_client = None
 
 if REDIS_URL:
     import redis
+
     redis_client = redis.from_url(REDIS_URL)
     redis_client.setnx("counter", 0)  # initialise only if key absent
 
@@ -30,3 +31,10 @@ def root():
         "hostname": socket.gethostname(),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
