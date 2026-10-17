@@ -26,10 +26,12 @@ def increment_counter() -> int:
 
 @app.get("/")
 def root():
+    now = datetime.now(timezone.utc)
     return {
         "n": increment_counter(),
         "hostname": socket.gethostname(),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": int(now.timestamp()),
+        "date": now.isoformat(),
     }
 
 
